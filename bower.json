@@ -1,8 +1,8 @@
 {
-  "name": "connect-store",
-  "version": "0.0.2",
+  "name": "connect-flux",
+  "version": "0.0.0",
   "authors": [
-    "Anton Nekipelov <anton.nekipelov@gmail.com>"
+    "Tommy Maintz <tommy.maintz@gmail.com>"
   ],
   "license": "MIT",
   "ignore": [
@@ -20,10 +20,9 @@
     "README.md"
   ],
   "dependencies": {
-    "angular": "1.3.7",
-    "flux": "2.0.2"
+    "angular": "~1.3.11"
   },
   "devDependencies": {
-    "angular-mocks": "1.3.7"
+    "angular-mocks": "~1.3.11"
   }
 }
