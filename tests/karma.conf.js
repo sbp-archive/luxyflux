@@ -12,9 +12,8 @@ module.exports = function (config) {
         files: [
             'bower_components/angular/angular.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'bower_components/flux/dist/Flux.js',
-            'src/connect-flux.js',
-            'src/**/*.js',
+            'node_modules/traceur/bin/traceur-runtime.js',
+            'dist/connect-flux.js',
             'tests/**/*.spec.js'
         ],
 
@@ -25,7 +24,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'src/**/*.js': 'coverage',  // get the coverage report for all .js files
+            'dist/connect-flux.js': 'coverage',  // get the coverage report for all .js files
             'tests/**/*.js': 'coverage'  // get the coverage report for all .js files
         },
 
@@ -56,7 +55,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits

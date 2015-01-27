@@ -1,16 +1,36 @@
-describe('Store', function () {
+describe('ActionCreators', function () {
     'use strict';
 
-    var Store;
+    var Actions;
+
+    var mockDispatcher, syncActionCreator;
 
     beforeEach(module('connect-flux'));
 
-    beforeEach(inject(function (_LuxaFluxStore_) {
-        Store = _LuxaFluxStore_;
+    beforeEach(inject(function (_LuxaFluxActions_) {
+        Actions = _LuxaFluxActions_;
     }));
 
-    it('should have run token', function () {
-        expect(true).toEqual(true);
+    describe('constructor()', function() {
+        beforeEach(function() {
+            mockDispatcher = {
+                register: jasmine.createSpy(),
+                dispatch: jasmine.createSpy()
+            };
+
+            syncActionCreator = new Actions(mockDispatcher);
+        });
+
+        it('should have throw an error when you do not pass in a dispatcher', function () {
+            function createActionCreatorWithoutDispatcher() {
+                return new Actions();
+            }
+            expect(createActionCreatorWithoutDispatcher).toThrow();
+        });
+
+        it('should bind our mockDispatcher', function() {
+            expect(syncActionCreator.dispatcher).toBe(mockDispatcher);
+        });
     });
 
     // var TeamAssetsStore = ConnectFlux.createStore({
