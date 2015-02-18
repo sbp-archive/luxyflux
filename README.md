@@ -1,4 +1,4 @@
-connect-flux
+connect-luxaflux
 ============
 
-Implementation for Flux on top of Angular inside Connect
+Implementation of Flux. Also exposes a module with services to be used in Angular.
