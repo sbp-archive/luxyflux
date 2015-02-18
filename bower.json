@@ -20,9 +20,11 @@
     "README.md"
   ],
   "dependencies": {
-    "angular": "~1.3.11"
+    "angular": "~1.3.13",
+    "systemjs": "*"
   },
   "devDependencies": {
-    "angular-mocks": "~1.3.11"
+    "angular-mocks": "~1.3.13",
+    "es6-module-loader": "~0.13.1"
   }
 }

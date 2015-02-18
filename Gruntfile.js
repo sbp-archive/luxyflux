@@ -7,6 +7,10 @@ module.exports = function(grunt) {
         // Metadata.
         pkg: grunt.file.readJSON('package.json'),
 
+        clean: {
+            build: './dist/*'
+        },
+
         jshint: {
             options: {
                 force: true,
@@ -38,40 +42,49 @@ module.exports = function(grunt) {
                 files: [
                     'src/**/*.js'
                 ],
-                tasks: ['traceur']
+                tasks: ['babel']
             }
         },
 
-        traceur: {
+        'babel': {
             options: {
-                traceurRuntime: './node_modules/traceur/bin/traceur-runtime.js',
-                traceurCommand: './node_modules/traceur/src/node/command.js',
-                traceurOptions: '--source-map --experimental'
+                sourceMap: true,
+                experimental: true
             },
-            minimal: {
-                files: {
-                    './dist/connect-flux.js': './src/ngFlux.js'
-                }
-            },
-            standalone: {
+            amd: {
                 options: {
-                    includeRuntime: true
+                    modules: 'amd'
                 },
-                files: {
-                    './dist/connect-flux-with-runtime.js': './src/ngFlux.js'
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: ['**/*.js'],
+                    dest: 'dist/amd/'
+                }]
+            },
+            system: {
+                options: {
+                    modules: 'system'
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: ['**/*.js'],
+                    dest: 'dist/system/'
+                }]
             }
         }
     });
 
     // These plugins provide necessary tasks.
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-traceur-simple');
+    grunt.loadNpmTasks('grunt-babel');
 
     // Default task.
-    grunt.registerTask('dev', ['karma', 'watch']);
+    grunt.registerTask('build', ['clean', 'babel:amd']);
     grunt.registerTask('default', ['dev']);
 };

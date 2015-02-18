@@ -1,4 +1,4 @@
-describe('ActionCreators', function () {
+describe('Actions', function () {
     'use strict';
 
     var Actions;
@@ -39,9 +39,8 @@ describe('ActionCreators', function () {
     //     },
 
     //     handlers: {
-    //         'ASSETS_LOAD_SUCCESS': 'loadAssetsSuccess',
+    //         'ASSETS_LOAD_COMPLETED': 'loadAssetsSuccess',
     //         'ASSETS_LOAD_FAILED': 'loadAssetsFailed',
-    //         'ASSETS_LOAD_FINALLY': 'loadAssetsFailed',
     //         'ASSET_CREATE': 'createAsset'
     //     },
 

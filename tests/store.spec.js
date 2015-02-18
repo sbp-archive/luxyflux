@@ -13,16 +13,17 @@ describe('Store', function () {
         expect(true).toEqual(true);
     });
 
-    // var TeamAssetsStore = ConnectFlux.createStore({
-    //     initialize: function() {
-    //         this.items = [];
-    //     },
+    // var TeamAssetsStore = LuxaFlux.createStore({
+    //     storeName: 'TeamAssets',
 
     //     handlers: {
     //         'ASSETS_LOAD_SUCCESS': 'loadAssetsSuccess',
     //         'ASSETS_LOAD_FAILED': 'loadAssetsFailed',
-    //         'ASSETS_LOAD_FINALLY': 'loadAssetsFailed',
     //         'ASSET_CREATE': 'createAsset'
+    //     },
+
+    //     initialize: function() {
+    //         this.items = [];
     //     },
 
     //     loadAssetsSuccess: function(assets) {
@@ -38,7 +39,7 @@ describe('Store', function () {
     //     }
     // });
 
-    // var AssetActions = ConnectFlux.createActions({
+    // var AssetActions = LuxaFlux.createActions({
     //     serviceActions: {
     //         'ASSETS_LOAD': 'loadAssets'
     //     },
@@ -55,4 +56,6 @@ describe('Store', function () {
     // AssetActions.loadAssets({team_key: 'sbp'}).then(function() {
     //     console.log('all actions dispatched and handled');
     // });
+
+    // AssetActions.createServiceActions();
 });
