@@ -1,5 +1,6 @@
 var _current;
 var _tokenCounter = 1;
+var _idCounter = 1;
 
 export class Dispatcher {
     static get current() {
@@ -13,7 +14,9 @@ export class Dispatcher {
         this._current = current;
     }
 
-    constructor() {
+    constructor(id) {
+        this.id = id || `dispatcher-${_idCounter++}`;
+
         this._callbacks = new Map();
         this._dispatchQueue = [];
 
@@ -82,14 +85,14 @@ export class Dispatcher {
      * @return { Promise } A promise to be resolved when all the callbacks have finised.
      */
     dispatch() {
-        var dispatchArguments = Array.toArray(arguments);
+        var dispatchArguments = Array.from(arguments);
         var promise;
 
         // If we are in the middle of a dispatch, enqueue the dispatch
         if (this._currentDispatch) {
             // Dispatch after the current one
             promise = this._currentDispatch.then(() => {
-                return this._dispatch(dispatchArguments);
+                return this._dispatch.call(this, dispatchArguments);
             });
 
             // Enqueue, set the chain as the current promise and return
@@ -107,14 +110,19 @@ export class Dispatcher {
     _dispatch(dispatchArguments) {
         this._currentDispatchPromises.clear();
 
-        for (var [token, callback] of this._callbacks) {
+        for (let [token, callback] of this._callbacks) {
             // A closure is needed for the callback and token variables
             ((token, callback) => {
                 // All the promises must be set in this._currentDispatchPromises
                 // before trying to resolved in order to make waitFor work
-                var promise = Promise.resolve().then(() =>{
-                    return callback.apply(this, dispatchArguments);
-                });
+                var promise = Promise.resolve()
+                    .then(() => {
+                        return this._executeCallback(callback, dispatchArguments);
+                    })
+                    .catch((e) => {
+                        throw new Error(e.stack || e);
+                    });
+
                 this._currentDispatchPromises.set(token, promise);
             })(token, callback);
         }
@@ -125,8 +133,12 @@ export class Dispatcher {
                 this._currentDispatch = false;
             }
         };
+        var dispatchPromises = Array.from(this._currentDispatchPromises.values());
+        return Promise.all(dispatchPromises).then(dequeue, dequeue);
+    }
 
-        return Promise.all(this._currentDispatchPromises.values()).then(dequeue, dequeue);
+    _executeCallback(callback, dispatchArguments) {
+        return callback.apply(this, dispatchArguments);
     }
 
     /**

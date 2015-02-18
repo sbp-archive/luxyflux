@@ -6,16 +6,21 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine'],
+        frameworks: ['systemjs', 'jasmine'],
+        plugins: ['karma-systemjs', 'karma-jasmine', 'karma-chrome-launcher'],
 
         // list of files / patterns to load in the browser
         files: [
+            'node_modules/grunt-6to5/node_modules/6to5/browser-polyfill.js',
             'bower_components/angular/angular.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'node_modules/traceur/bin/traceur-runtime.js',
-            'dist/connect-flux.js',
+            'dist/system/**/*.js',
             'tests/**/*.spec.js'
         ],
+
+        systemjs: {
+            configFile: 'tests/system.config.js'
+        },
 
         // list of files to exclude
         exclude: [
@@ -24,8 +29,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'dist/connect-flux.js': 'coverage',  // get the coverage report for all .js files
-            'tests/**/*.js': 'coverage'  // get the coverage report for all .js files
+            'dist/**/*.js': 'coverage'  // get the coverage report for all .js files
         },
 
         // test results reporter to use

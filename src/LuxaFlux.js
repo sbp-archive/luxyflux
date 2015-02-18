@@ -1,76 +1,87 @@
 import Dispatcher from './Dispatcher';
-import Actions from './Actions';
+import ActionCreators from './ActionCreators';
 import Store from './Store';
 
-export {Dispatcher, Actions, Store};
+export {Dispatcher, ActionCreators, Store};
 
 export var defaultStoreConfig = {
-    name: null,
     dispatcher: Dispatcher.current,
+    name: null,
     handlers: {},
-    initialize: ()=>{}
+    initialize: ()=>{},
+    decorate: null
 };
 
-export var defaultActionsConfig = {
+export var defaultActionCreatorsConfig = {
     dispatcher: Dispatcher.current,
     serviceActions: {},
+    decorate: null
 };
 
 export class LuxaFlux {
-    static createStore(StoreClass, config) {
-        if (Object.isObject(StoreCls)) {
-            config = StoreCls;
-            StoreClass = Store;
-        }
-
+    static createStore(config) {
         config = Object.assign({}, defaultStoreConfig, config);
 
-        var {name, dispatcher, handlers, initializeFn} = config;
-
-        delete config.initialize;
+        var {name, dispatcher, handlers, initialize, decorate} = config;
+        delete config.name;
         delete config.dispatcher;
         delete config.handlers;
-        delete config.initializeFn;
+        delete config.initialize;
+        delete config.decorate;
 
-        for (var [actionType, handlerName] of _entries(handlers)) {
-            if (config[handlerName] instanceof Function) {
-                handlers[actionType] = config[handlerName];
+        var source = decorate || config;
+        if (decorate) {
+            handlers = Object.assign({}, handlers, decorate.handlers || {});
+        }
+
+        for (let [actionType, handlerName] of _entries(handlers)) {
+            let handler = source[handlerName];
+            if (handler instanceof Function) {
+                handlers[actionType] = source[handlerName];
             }
-        };
+        }
 
-        return new StoreClass(name, dispatcher, handlers, initializeFn);
+        if (decorate) {
+            Store.decorate(decorate, name, dispatcher, handlers);
+            return decorate;
+        } else {
+            return new Store(name, dispatcher, handlers, initialize);
+        }
     }
 
-    static createActions(ActionsClass, config) {
-        if (Object.isObject(ActionsClass)) {
-            config = ActionsClass;
-            ActionsClass = Actions;
-        }
+    static createActions(config) {
+        config = Object.assign({}, defaultActionCreatorsConfig, config);
 
-        config = Object.assign({}, defaultActionsConfig, config);
-
-        var {dispatcher, serviceActions} = config;
-
+        var {dispatcher, serviceActions, decorate} = config;
         delete config.dispatcher;
         delete config.serviceActions;
+        delete config.decorate;
 
-        var actions = {};
+        var source = decorate || config;
+        if (decorate) {
+            serviceActions = Object.assign({}, serviceActions, decorate.serviceActions || {});
+        }
 
-        for (var [actionType, action] of _entries(config)) {
+        for (let [actionType, actionName] of _entries(serviceActions)) {
+            let action = source[actionName];
             if (action instanceof Function) {
-                actions[actionType] = action;
-            }
-        }
-
-        for (var [actionType, actionName] of _entries(serviceActions)) {
-            var action = actions[actionName];
-            if (action) {
-                actions[actionName] = Actions.createServiceAction(
+                let serviceAction = ActionCreators.createServiceAction(
                     dispatcher, actionType, action);
+
+                Object.defineProperty(source, actionName, {
+                    writable: false,
+                    enumerable: false,
+                    value: serviceAction
+                });
             }
         }
 
-        return new ActionsClass(dispatcher, actions);
+        if (decorate) {
+            ActionCreators.decorate(decorate, dispatcher);
+            return decorate;
+        } else {
+            return new ActionCreators(dispatcher, source);
+        }
     }
 
     static dispatchAction(action, payload) {
