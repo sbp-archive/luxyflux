@@ -18,7 +18,7 @@ export var defaultActionCreatorsConfig = {
     decorate: null
 };
 
-export class LuxaFlux {
+export class LuxyFlux {
     static createStore(config) {
         config = Object.assign({}, defaultStoreConfig, config);
 
@@ -88,7 +88,7 @@ export class LuxaFlux {
         return Dispatcher.current.dispatch(action, payload);
     }
 }
-export default LuxaFlux;
+export default LuxyFlux;
 
 // using a generator function
 function* _entries(obj) {

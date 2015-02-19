@@ -85,6 +85,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-babel');
 
     // Default task.
-    grunt.registerTask('build', ['clean', 'babel:amd']);
+    grunt.registerTask('build', ['clean', 'babel']);
     grunt.registerTask('default', ['dev']);
 };

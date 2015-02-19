@@ -4,8 +4,8 @@ import {
     ActionCreators,
     Dispatcher,
     Store,
-    LuxaFlux
-} from './LuxaFlux';
+    LuxyFlux
+} from './luxyflux';
 
 class AngularDispatcher extends Dispatcher {
     constructor(name, rootScope) {
@@ -21,18 +21,18 @@ class AngularDispatcher extends Dispatcher {
     }
 }
 
-export var luxafluxModule = angular.module('connect-luxaflux', [])
-    .service('LuxaFluxActionCreators', function () {
+export var luxyfluxModule = angular.module('luxyflux', [])
+    .service('LuxyFluxActionCreators', function () {
         return ActionCreators;
     })
-    .service('LuxaFluxDispatcher', function() {
+    .service('LuxyFluxDispatcher', function() {
         return AngularDispatcher;
     })
-    .service('LuxaFluxStore', function() {
+    .service('LuxyFluxStore', function() {
         return Store;
     })
-    .service('LuxaFlux', function() {
-        return LuxaFlux;
+    .service('LuxyFlux', function() {
+        return LuxyFlux;
     });
 
-export default luxafluxModule;
+export default luxyfluxModule;

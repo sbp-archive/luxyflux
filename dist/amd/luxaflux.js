@@ -59,12 +59,12 @@ define(["exports", "./Dispatcher", "./ActionCreators", "./Store"], function (exp
         decorate: null
     };
 
-    var LuxaFlux = exports.LuxaFlux = (function () {
-        function LuxaFlux() {
-            _classCallCheck(this, LuxaFlux);
+    var LuxyFlux = exports.LuxyFlux = (function () {
+        function LuxyFlux() {
+            _classCallCheck(this, LuxyFlux);
         }
 
-        _prototypeProperties(LuxaFlux, {
+        _prototypeProperties(LuxyFlux, {
             createStore: {
                 value: function createStore(config) {
                     config = Object.assign({}, defaultStoreConfig, config);
@@ -158,9 +158,9 @@ define(["exports", "./Dispatcher", "./ActionCreators", "./Store"], function (exp
             }
         });
 
-        return LuxaFlux;
+        return LuxyFlux;
     })();
-    exports["default"] = LuxaFlux;
+    exports["default"] = LuxyFlux;
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
