@@ -1,4 +1,4 @@
-define(["exports", "angular", "./LuxyFlux"], function (exports, _angular, _LuxyFlux) {
+define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyflux) {
     "use strict";
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15,10 +15,10 @@ define(["exports", "angular", "./LuxyFlux"], function (exports, _angular, _LuxyF
 
     var angular = _interopRequire(_angular);
 
-    var ActionCreators = _LuxyFlux.ActionCreators;
-    var Dispatcher = _LuxyFlux.Dispatcher;
-    var Store = _LuxyFlux.Store;
-    var LuxyFlux = _LuxyFlux.LuxyFlux;
+    var ActionCreators = _luxyflux.ActionCreators;
+    var Dispatcher = _luxyflux.Dispatcher;
+    var Store = _luxyflux.Store;
+    var LuxyFlux = _luxyflux.LuxyFlux;
     var AngularDispatcher = (function (Dispatcher) {
         function AngularDispatcher(name, rootScope) {
             _classCallCheck(this, AngularDispatcher);
@@ -63,4 +63,4 @@ define(["exports", "angular", "./LuxyFlux"], function (exports, _angular, _LuxyF
         value: true
     });
 });
-//# sourceMappingURL=ng-luxaflux.js.map
+//# sourceMappingURL=ng-luxyflux.js.map

@@ -167,4 +167,4 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
         }
     };
 });
-//# sourceMappingURL=luxaflux.js.map
+//# sourceMappingURL=luxyflux.js.map

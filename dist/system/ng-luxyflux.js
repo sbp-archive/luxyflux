@@ -1,15 +1,15 @@
-System.register(["angular", "./LuxyFlux"], function (_export) {
+System.register(["angular", "./luxyflux"], function (_export) {
     "use strict";
 
     var angular, ActionCreators, Dispatcher, Store, LuxyFlux, _toConsumableArray, _prototypeProperties, _get, _inherits, _classCallCheck, AngularDispatcher, luxyfluxModule;
     return {
         setters: [function (_angular) {
             angular = _angular["default"];
-        }, function (_LuxyFlux) {
-            ActionCreators = _LuxyFlux.ActionCreators;
-            Dispatcher = _LuxyFlux.Dispatcher;
-            Store = _LuxyFlux.Store;
-            LuxyFlux = _LuxyFlux.LuxyFlux;
+        }, function (_luxyflux) {
+            ActionCreators = _luxyflux.ActionCreators;
+            Dispatcher = _luxyflux.Dispatcher;
+            Store = _luxyflux.Store;
+            LuxyFlux = _luxyflux.LuxyFlux;
         }],
         execute: function () {
             _toConsumableArray = function (arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } };
@@ -63,4 +63,4 @@ System.register(["angular", "./LuxyFlux"], function (_export) {
         }
     };
 });
-//# sourceMappingURL=ng-luxaflux.js.map
+//# sourceMappingURL=ng-luxyflux.js.map

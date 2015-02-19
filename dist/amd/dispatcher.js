@@ -49,7 +49,7 @@ define(["exports"], function (exports) {
                 value: function register(token, callback) {
                     if (token instanceof Function) {
                         callback = token;
-                        token = "luxaflux-callback-token-" + _tokenCounter++;
+                        token = "luxyflux-callback-token-" + _tokenCounter++;
                     }
 
                     this._callbacks.set(token, callback);
