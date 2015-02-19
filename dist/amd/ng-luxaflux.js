@@ -1,4 +1,4 @@
-define(["exports", "angular", "./LuxaFlux"], function (exports, _angular, _LuxaFlux) {
+define(["exports", "angular", "./LuxyFlux"], function (exports, _angular, _LuxyFlux) {
     "use strict";
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -15,10 +15,10 @@ define(["exports", "angular", "./LuxaFlux"], function (exports, _angular, _LuxaF
 
     var angular = _interopRequire(_angular);
 
-    var ActionCreators = _LuxaFlux.ActionCreators;
-    var Dispatcher = _LuxaFlux.Dispatcher;
-    var Store = _LuxaFlux.Store;
-    var LuxaFlux = _LuxaFlux.LuxaFlux;
+    var ActionCreators = _LuxyFlux.ActionCreators;
+    var Dispatcher = _LuxyFlux.Dispatcher;
+    var Store = _LuxyFlux.Store;
+    var LuxyFlux = _LuxyFlux.LuxyFlux;
     var AngularDispatcher = (function (Dispatcher) {
         function AngularDispatcher(name, rootScope) {
             _classCallCheck(this, AngularDispatcher);
@@ -48,17 +48,17 @@ define(["exports", "angular", "./LuxaFlux"], function (exports, _angular, _LuxaF
         return AngularDispatcher;
     })(Dispatcher);
 
-    var luxafluxModule = exports.luxafluxModule = angular.module("connect-luxaflux", []).service("LuxaFluxActionCreators", function () {
+    var luxyfluxModule = exports.luxyfluxModule = angular.module("luxyflux", []).service("LuxyFluxActionCreators", function () {
         return ActionCreators;
-    }).service("LuxaFluxDispatcher", function () {
+    }).service("LuxyFluxDispatcher", function () {
         return AngularDispatcher;
-    }).service("LuxaFluxStore", function () {
+    }).service("LuxyFluxStore", function () {
         return Store;
-    }).service("LuxaFlux", function () {
-        return LuxaFlux;
+    }).service("LuxyFlux", function () {
+        return LuxyFlux;
     });
 
-    exports["default"] = luxafluxModule;
+    exports["default"] = luxyfluxModule;
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
