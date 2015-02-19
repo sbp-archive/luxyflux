@@ -165,4 +165,4 @@ define(["exports", "./Dispatcher", "./ActionCreators", "./Store"], function (exp
         value: true
     });
 });
-//# sourceMappingURL=luxaflux.js.map
+//# sourceMappingURL=luxyflux.js.map
