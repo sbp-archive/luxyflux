@@ -52,14 +52,19 @@ export class ActionCreators {
         return function() {
             var args = Array.from(arguments);
             dispatcher.dispatch(`${actionType}_STARTED`, ...args);
-            return action.call(this, ...args).then(
-                (result) => {
-                    dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
-                },
-                (error) => {
-                    dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
-                }
-            );
+
+            return new Promise((resolve, reject) => {
+                action.call(this, ...args).then(
+                    (result) => {
+                        dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
+                        resolve(result);
+                    },
+                    (error) => {
+                        dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
+                        reject(error);
+                    }
+                );
+            });
         };
     }
 }
