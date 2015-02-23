@@ -19,7 +19,7 @@ export var defaultActionCreatorsConfig = {
 };
 
 export class LuxyFlux {
-    static createStore(config) {
+    static createStore(config, StoreCls = Store) {
         config = Object.assign({}, defaultStoreConfig, config);
 
         var {name, dispatcher, handlers, initialize, decorate} = config;
@@ -42,14 +42,14 @@ export class LuxyFlux {
         }
 
         if (decorate) {
-            Store.decorate(decorate, name, dispatcher, handlers);
+            StoreCls.decorate(decorate, name, dispatcher, handlers);
             return decorate;
         } else {
-            return new Store(name, dispatcher, handlers, initialize);
+            return new StoreCls(name, dispatcher, handlers, initialize);
         }
     }
 
-    static createActions(config) {
+    static createActions(config, ActionCreatorsCls = ActionCreators) {
         config = Object.assign({}, defaultActionCreatorsConfig, config);
 
         var {dispatcher, serviceActions, decorate} = config;
@@ -65,7 +65,7 @@ export class LuxyFlux {
         for (let [actionType, actionName] of _entries(serviceActions)) {
             let action = source[actionName];
             if (action instanceof Function) {
-                let serviceAction = ActionCreators.createServiceAction(
+                let serviceAction = ActionCreatorsCls.createServiceAction(
                     dispatcher, actionType, action);
 
                 Object.defineProperty(source, actionName, {
@@ -77,15 +77,11 @@ export class LuxyFlux {
         }
 
         if (decorate) {
-            ActionCreators.decorate(decorate, dispatcher);
+            ActionCreatorsCls.decorate(decorate, dispatcher);
             return decorate;
         } else {
-            return new ActionCreators(dispatcher, source);
+            return new ActionCreatorsCls(dispatcher, source);
         }
-    }
-
-    static dispatchAction(action, payload) {
-        return Dispatcher.current.dispatch(action, payload);
     }
 }
 export default LuxyFlux;

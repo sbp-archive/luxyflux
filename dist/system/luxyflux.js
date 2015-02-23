@@ -70,6 +70,7 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
                 _prototypeProperties(LuxyFlux, {
                     createStore: {
                         value: function createStore(config) {
+                            var StoreCls = arguments[1] === undefined ? Store : arguments[1];
                             config = Object.assign({}, defaultStoreConfig, config);
 
                             var name = config.name;
@@ -100,10 +101,10 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
                             }
 
                             if (decorate) {
-                                Store.decorate(decorate, name, dispatcher, handlers);
+                                StoreCls.decorate(decorate, name, dispatcher, handlers);
                                 return decorate;
                             } else {
-                                return new Store(name, dispatcher, handlers, initialize);
+                                return new StoreCls(name, dispatcher, handlers, initialize);
                             }
                         },
                         writable: true,
@@ -111,6 +112,7 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
                     },
                     createActions: {
                         value: function createActions(config) {
+                            var ActionCreatorsCls = arguments[1] === undefined ? ActionCreators : arguments[1];
                             config = Object.assign({}, defaultActionCreatorsConfig, config);
 
                             var dispatcher = config.dispatcher;
@@ -132,7 +134,7 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
                                 var actionName = _step$value[1];
                                 var action = source[actionName];
                                 if (action instanceof Function) {
-                                    var serviceAction = ActionCreators.createServiceAction(dispatcher, actionType, action);
+                                    var serviceAction = ActionCreatorsCls.createServiceAction(dispatcher, actionType, action);
 
                                     Object.defineProperty(source, actionName, {
                                         writable: false,
@@ -143,18 +145,11 @@ System.register(["./Dispatcher", "./ActionCreators", "./Store"], function (_expo
                             }
 
                             if (decorate) {
-                                ActionCreators.decorate(decorate, dispatcher);
+                                ActionCreatorsCls.decorate(decorate, dispatcher);
                                 return decorate;
                             } else {
-                                return new ActionCreators(dispatcher, source);
+                                return new ActionCreatorsCls(dispatcher, source);
                             }
-                        },
-                        writable: true,
-                        configurable: true
-                    },
-                    dispatchAction: {
-                        value: function dispatchAction(action, payload) {
-                            return Dispatcher.current.dispatch(action, payload);
                         },
                         writable: true,
                         configurable: true

@@ -24,7 +24,7 @@ define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyf
             _classCallCheck(this, AngularDispatcher);
 
             _get(Object.getPrototypeOf(AngularDispatcher.prototype), "constructor", this).call(this, name);
-            this._rootScope = rootScope;
+            this.rootScope = rootScope;
         }
 
         _inherits(AngularDispatcher, Dispatcher);
@@ -35,7 +35,7 @@ define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyf
                     var _this2 = this;
                     var _this = this;
                     var args = Array.from(arguments);
-                    this._rootScope.$apply(function () {
+                    this.rootScope.$apply(function () {
                         var _get2;
                         (_get2 = _get(Object.getPrototypeOf(AngularDispatcher.prototype), "_executeCallback", _this)).call.apply(_get2, [_this2].concat(_toConsumableArray(args)));
                     });
@@ -48,8 +48,48 @@ define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyf
         return AngularDispatcher;
     })(Dispatcher);
 
+    var AngularActionCreators = (function (ActionCreators) {
+        function AngularActionCreators() {
+            _classCallCheck(this, AngularActionCreators);
+
+            if (ActionCreators != null) {
+                ActionCreators.apply(this, arguments);
+            }
+        }
+
+        _inherits(AngularActionCreators, ActionCreators);
+
+        _prototypeProperties(AngularActionCreators, {
+            createServiceAction: {
+                value: function createServiceAction(dispatcher, actionType, action) {
+                    return function () {
+                        var _this2 = this;
+                        var args = Array.from(arguments);
+                        dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_STARTED"].concat(_toConsumableArray(args)));
+
+                        return new Promise(function (resolve, reject) {
+                            dispatcher.rootScope.$apply(function () {
+                                action.call.apply(action, [_this2].concat(_toConsumableArray(args))).then(function (result) {
+                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_COMPLETED", result].concat(_toConsumableArray(args)));
+                                    resolve(result);
+                                }, function (error) {
+                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED", error].concat(_toConsumableArray(args)));
+                                    reject(error);
+                                });
+                            });
+                        });
+                    };
+                },
+                writable: true,
+                configurable: true
+            }
+        });
+
+        return AngularActionCreators;
+    })(ActionCreators);
+
     var luxyfluxModule = exports.luxyfluxModule = angular.module("luxyflux", []).service("LuxyFluxActionCreators", function () {
-        return ActionCreators;
+        return AngularActionCreators;
     }).service("LuxyFluxDispatcher", function () {
         return AngularDispatcher;
     }).service("LuxyFluxStore", function () {
