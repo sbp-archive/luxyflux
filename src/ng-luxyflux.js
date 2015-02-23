@@ -7,56 +7,54 @@ import {
     LuxyFlux
 } from './luxyflux';
 
-class AngularDispatcher extends Dispatcher {
-    constructor(name, rootScope) {
-        super(name);
-        this.rootScope = rootScope;
-    }
+export var luxyfluxModule = angular.module('luxyflux', []);
 
-    _executeCallback() {
-        var args = Array.from(arguments);
-        this.rootScope.$apply(() => {
-            super._executeCallback.call(this, ...args);
-        });
-    }
-}
-
-class AngularActionCreators extends ActionCreators {
-    static createServiceAction(dispatcher, actionType, action) {
-        return function() {
-            var args = Array.from(arguments);
-            dispatcher.dispatch(`${actionType}_STARTED`, ...args);
-
-            return new Promise((resolve, reject) => {
-                dispatcher.rootScope.$apply(() => {
-                    action.call(this, ...args).then(
-                        (result) => {
-                            dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
-                            resolve(result);
-                        },
-                        (error) => {
-                            dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
-                            reject(error);
-                        }
-                    );
-                });
-            });
+luxyfluxModule.service('LuxyFluxActionCreators', [
+    '$q',
+    function ($q) {
+        return class AngularActionCreators extends ActionCreators {
+            static createServiceAction(dispatcher, actionType, action) {
+                return function() {
+                    var args = Array.from(arguments);
+                    dispatcher.dispatch(`${actionType}_STARTED`, ...args);
+                    return $q((resolve, reject) => {
+                        action.call(this, ...args).then(
+                            (result) => {
+                                dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
+                                resolve(result);
+                            },
+                            (error) => {
+                                dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
+                                reject(error);
+                            }
+                        );
+                    });
+                };
+            }
         };
     }
-}
+]);
 
-export var luxyfluxModule = angular.module('luxyflux', [])
-    .service('LuxyFluxActionCreators', function () {
-        return AngularActionCreators;
-    })
-    .service('LuxyFluxDispatcher', function() {
-        return AngularDispatcher;
-    })
-    .service('LuxyFluxStore', function() {
-        return Store;
-    })
-    .service('LuxyFlux', function() {
-        return LuxyFlux;
-    });
+luxyfluxModule.service('LuxyFluxDispatcher', [
+    '$rootScope',
+    function($rootScope) {
+        return class AngularDispatcher extends Dispatcher {
+            _executeCallback() {
+                var args = Array.from(arguments);
+                $rootScope.$apply(() => {
+                    super._executeCallback.call(this, ...args);
+                });
+            }
+        };
+    }
+]);
+
+luxyfluxModule.service('LuxyFluxStore', function() {
+    return class AngularStore extends Store {};
+});
+
+luxyfluxModule.service('LuxyFlux', function() {
+    return class AngularLuxyFlux extends LuxyFlux {};
+});
 
 export default luxyfluxModule;
