@@ -58,10 +58,16 @@ System.register([], function (_export) {
 
                                 return new Promise(function (resolve, reject) {
                                     action.call.apply(action, [_this].concat(_toConsumableArray(args))).then(function (result) {
-                                        dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_COMPLETED", result].concat(_toConsumableArray(args)));
+                                        if (result) {
+                                            args.unshift(result);
+                                        }
+                                        dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_COMPLETED"].concat(_toConsumableArray(args)));
                                         resolve(result);
                                     }, function (error) {
-                                        dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED", error].concat(_toConsumableArray(args)));
+                                        if (error) {
+                                            args.unshift(error);
+                                        }
+                                        dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED"].concat(_toConsumableArray(args)));
                                         reject(error);
                                     });
                                 });
