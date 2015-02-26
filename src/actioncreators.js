@@ -56,11 +56,17 @@ export class ActionCreators {
             return new Promise((resolve, reject) => {
                 action.call(this, ...args).then(
                     (result) => {
-                        dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
+                        if (result) {
+                            args.unshift(result);
+                        }
+                        dispatcher.dispatch(`${actionType}_COMPLETED`, ...args);
                         resolve(result);
                     },
                     (error) => {
-                        dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
+                        if (error) {
+                            args.unshift(error);
+                        }
+                        dispatcher.dispatch(`${actionType}_FAILED`, ...args);
                         reject(error);
                     }
                 );
