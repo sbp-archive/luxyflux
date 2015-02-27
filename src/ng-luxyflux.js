@@ -20,11 +20,17 @@ luxyfluxModule.service('LuxyFluxActionCreators', [
                     return $q((resolve, reject) => {
                         action.call(this, ...args).then(
                             (result) => {
-                                dispatcher.dispatch(`${actionType}_COMPLETED`, result, ...args);
+                                if (result !== undefined) {
+                                    args.unshift(result);
+                                }
+                                dispatcher.dispatch(`${actionType}_COMPLETED`, ...args);
                                 resolve(result);
                             },
                             (error) => {
-                                dispatcher.dispatch(`${actionType}_FAILED`, error, ...args);
+                                if (error !== undefined) {
+                                    args.unshift(result);
+                                }
+                                dispatcher.dispatch(`${actionType}_FAILED`, ...args);
                                 reject(error);
                             }
                         );

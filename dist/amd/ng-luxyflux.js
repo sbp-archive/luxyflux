@@ -42,10 +42,16 @@ define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyf
                             dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_STARTED"].concat(_toConsumableArray(args)));
                             return $q(function (resolve, reject) {
                                 action.call.apply(action, [_this].concat(_toConsumableArray(args))).then(function (result) {
-                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_COMPLETED", result].concat(_toConsumableArray(args)));
+                                    if (result !== undefined) {
+                                        args.unshift(result);
+                                    }
+                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_COMPLETED"].concat(_toConsumableArray(args)));
                                     resolve(result);
                                 }, function (error) {
-                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED", error].concat(_toConsumableArray(args)));
+                                    if (error !== undefined) {
+                                        args.unshift(result);
+                                    }
+                                    dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED"].concat(_toConsumableArray(args)));
                                     reject(error);
                                 });
                             });

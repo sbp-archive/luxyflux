@@ -205,4 +205,4 @@ define(["exports"], function (exports) {
         value: true
     });
 });
-//# sourceMappingURL=dispatcher.js.map
+//# sourceMappingURL=dispatcher2.js.map
