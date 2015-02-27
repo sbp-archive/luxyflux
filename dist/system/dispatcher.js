@@ -206,4 +206,4 @@ System.register([], function (_export) {
         }
     };
 });
-//# sourceMappingURL=dispatcher2.js.map
+//# sourceMappingURL=dispatcher.js.map
