@@ -5,13 +5,14 @@ import {
     Dispatcher,
     Store,
     LuxyFlux
-} from './luxyflux';
+}
+from './luxyflux';
 
 export var luxyfluxModule = angular.module('luxyflux', []);
 
 luxyfluxModule.service('LuxyFluxActionCreators', [
     '$q',
-    function ($q) {
+    function($q) {
         return class AngularActionCreators extends ActionCreators {
             static createServiceAction(dispatcher, actionType, action) {
                 return function() {
@@ -23,14 +24,17 @@ luxyfluxModule.service('LuxyFluxActionCreators', [
                                 if (result !== undefined) {
                                     args.unshift(result);
                                 }
-                                dispatcher.dispatch(`${actionType}_COMPLETED`, ...args);
+                                dispatcher.dispatch(
+                                    `${actionType}_COMPLETED`,
+                                    ...args);
                                 resolve(result);
-                            },
-                            (error) => {
+                            }, (error) => {
                                 if (error !== undefined) {
-                                    args.unshift(result);
+                                    args.unshift(error);
                                 }
-                                dispatcher.dispatch(`${actionType}_FAILED`, ...args);
+                                dispatcher.dispatch(
+                                    `${actionType}_FAILED`, ...args
+                                );
                                 reject(error);
                             }
                         );
