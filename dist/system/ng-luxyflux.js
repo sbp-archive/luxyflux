@@ -53,7 +53,7 @@ System.register(["angular", "./luxyflux"], function (_export) {
                                             resolve(result);
                                         }, function (error) {
                                             if (error !== undefined) {
-                                                args.unshift(result);
+                                                args.unshift(error);
                                             }
                                             dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED"].concat(_toConsumableArray(args)));
                                             reject(error);

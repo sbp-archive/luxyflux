@@ -49,7 +49,7 @@ define(["exports", "angular", "./luxyflux"], function (exports, _angular, _luxyf
                                     resolve(result);
                                 }, function (error) {
                                     if (error !== undefined) {
-                                        args.unshift(result);
+                                        args.unshift(error);
                                     }
                                     dispatcher.dispatch.apply(dispatcher, ["" + actionType + "_FAILED"].concat(_toConsumableArray(args)));
                                     reject(error);
