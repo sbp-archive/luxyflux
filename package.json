@@ -16,5 +16,10 @@
     "karma-coverage": "^0.2.6",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4"
+  },
+  "jspm": {
+    "directories": {
+      "lib": "src"
+    }
   }
 }
