@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         'babel': {
             options: {
                 sourceMap: true,
-                experimental: true
+                optional: ['spec.protoToAssign']
             },
             amd: {
                 options: {

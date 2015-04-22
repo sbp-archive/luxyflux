@@ -1,17 +1,20 @@
 define(["exports"], function (exports) {
     "use strict";
 
-    var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) { _arr.push(_step.value); if (i && _arr.length === i) break; } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
-
-    var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+    var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } };
 
     var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
     var _current;
     var _tokenCounter = 1;
     var _idCounter = 1;
 
-    var Dispatcher = exports.Dispatcher = (function () {
+    var Dispatcher = (function () {
         function Dispatcher(id) {
             _classCallCheck(this, Dispatcher);
 
@@ -24,185 +27,207 @@ define(["exports"], function (exports) {
             this._currentDispatchPromises = new Map();
         }
 
-        _prototypeProperties(Dispatcher, {
-            current: {
-                get: function () {
-                    if (!_current) {
-                        _current = new Dispatcher();
-                    }
-                    return _current;
-                },
-                set: function (current) {
-                    this._current = current;
-                },
-                configurable: true
+        _createClass(Dispatcher, [{
+            key: "register",
+
+            /**
+             * Register a callback that will be called when an action is dispatched.
+             *
+             * @param  {Function} callback The callback to be called when an action is dispatched
+             * @return {String} The callback token that can be used to unregister this callback
+             */
+            value: function register(token, callback) {
+                if (token instanceof Function) {
+                    callback = token;
+                    token = "luxyflux-callback-token-" + _tokenCounter++;
+                }
+
+                this._callbacks.set(token, callback);
+
+                return token;
             }
         }, {
-            register: {
+            key: "unregister",
 
-                /**
-                 * Register a callback that will be called when an action is dispatched.
-                 *
-                 * @param  {Function} callback The callback to be called when an action is dispatched
-                 * @return {String} The callback token that can be used to unregister this callback
-                 */
-                value: function register(token, callback) {
-                    if (token instanceof Function) {
-                        callback = token;
-                        token = "luxyflux-callback-token-" + _tokenCounter++;
-                    }
+            /**
+             * Unregister a callback from this dispatcher
+             *
+             * @param  {String} token The callback token to be unregistered from this dispatcher
+             */
+            value: function unregister(token) {
+                return this._callbacks["delete"](token);
+            }
+        }, {
+            key: "waitFor",
 
-                    this._callbacks.set(token, callback);
+            /**
+             * Creates a promise and waits for the callbacks specified to complete before resolve it.
+             *
+             * @param  {String<Array>|String} tokens The callback tokens to wait for.
+             * @return {Promise} A promise to be resolved when the specified callbacks are completed.
+             */
+            value: function waitFor(tokens) {
+                if (!Array.isArray(tokens)) {
+                    tokens = [tokens];
+                }
 
-                    return token;
-                },
-                writable: true,
-                configurable: true
-            },
-            unregister: {
+                var waitForPromises = [];
 
-                /**
-                 * Unregister a callback from this dispatcher
-                 *
-                 * @param  {String} token The callback token to be unregistered from this dispatcher
-                 */
-                value: function unregister(token) {
-                    return this._callbacks["delete"](token);
-                },
-                writable: true,
-                configurable: true
-            },
-            waitFor: {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
 
-                /**
-                 * Creates a promise and waits for the callbacks specified to complete before resolve it.
-                 *
-                 * @param  {String<Array>|String} tokens The callback tokens to wait for.
-                 * @return {Promise} A promise to be resolved when the specified callbacks are completed.
-                 */
-                value: function waitFor(tokens) {
-                    if (!Array.isArray(tokens)) {
-                        tokens = [tokens];
-                    }
-
-                    var waitForPromises = [];
-
-                    for (var _iterator = tokens[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
+                try {
+                    for (var _iterator = tokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var token = _step.value;
+
                         if (this._currentDispatchPromises.has(token)) {
                             waitForPromises.push(this._currentDispatchPromises.get(token));
                         }
                     }
-
-                    if (!waitForPromises.length) {
-                        return Promise.resolve();
-                    }
-
-                    return Promise.all(waitForPromises);
-                },
-                writable: true,
-                configurable: true
-            },
-            dispatch: {
-
-                /**
-                 * Dispatches an action to all the registered callbacks/stores.
-                 *
-                 * If a second action is dispatched while there is a dispatch on, it will be
-                 * enqueued an dispatched after the current one.
-                 *
-                 * @return { Promise } A promise to be resolved when all the callbacks have finised.
-                 */
-                value: function dispatch() {
-                    var _this = this;
-                    var dispatchArguments = Array.from(arguments);
-                    var promise;
-
-                    // If we are in the middle of a dispatch, enqueue the dispatch
-                    if (this._currentDispatch) {
-                        // Dispatch after the current one
-                        promise = this._currentDispatch.then(function () {
-                            return _this._dispatch.call(_this, dispatchArguments);
-                        });
-
-                        // Enqueue, set the chain as the current promise and return
-                        this._dispatchQueue.push(promise);
-                    } else {
-                        promise = this._dispatch(dispatchArguments);
-                    }
-
-                    this._currentDispatch = promise;
-
-                    return promise;
-                },
-                writable: true,
-                configurable: true
-            },
-            _dispatch: {
-                value: function _dispatch(dispatchArguments) {
-                    var _this = this;
-                    this._currentDispatchPromises.clear();
-
-                    for (var _iterator = this._callbacks[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
-                        var _step$value;
-                        (function () {
-                            _step$value = _slicedToArray(_step.value, 2);
-                            var token = _step$value[0];
-                            var callback = _step$value[1];
-                            // A closure is needed for the callback and token variables
-                            (function (token, callback) {
-                                // All the promises must be set in this._currentDispatchPromises
-                                // before trying to resolved in order to make waitFor work
-                                var promise = Promise.resolve().then(function () {
-                                    return _this._executeCallback(callback, dispatchArguments);
-                                })["catch"](function (e) {
-                                    throw new Error(e.stack || e);
-                                });
-
-                                _this._currentDispatchPromises.set(token, promise);
-                            })(token, callback);
-                        })();
-                    }
-
-                    var dequeue = function () {
-                        _this._dispatchQueue.shift();
-                        if (!_this._dispatchQueue.length) {
-                            _this._currentDispatch = false;
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator["return"]) {
+                            _iterator["return"]();
                         }
-                    };
-                    var dispatchPromises = Array.from(this._currentDispatchPromises.values());
-                    return Promise.all(dispatchPromises).then(dequeue, dequeue);
-                },
-                writable: true,
-                configurable: true
-            },
-            _executeCallback: {
-                value: function _executeCallback(callback, dispatchArguments) {
-                    return callback.apply(this, dispatchArguments);
-                },
-                writable: true,
-                configurable: true
-            },
-            isDispatching: {
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
 
-                /**
-                 * Is this dispatcher currently dispatching.
-                 *
-                 * @return {Boolean}
-                 */
-                value: function isDispatching() {
-                    return !!this._dispatchQueue.length;
-                },
-                writable: true,
-                configurable: true
+                if (!waitForPromises.length) {
+                    return Promise.resolve();
+                }
+
+                return Promise.all(waitForPromises);
             }
-        });
+        }, {
+            key: "dispatch",
+
+            /**
+             * Dispatches an action to all the registered callbacks/stores.
+             *
+             * If a second action is dispatched while there is a dispatch on, it will be
+             * enqueued an dispatched after the current one.
+             *
+             * @return { Promise } A promise to be resolved when all the callbacks have finised.
+             */
+            value: function dispatch() {
+                var _this = this;
+
+                var dispatchArguments = Array.from(arguments);
+                var promise;
+
+                // If we are in the middle of a dispatch, enqueue the dispatch
+                if (this._currentDispatch) {
+                    // Dispatch after the current one
+                    promise = this._currentDispatch.then(function () {
+                        return _this._dispatch.call(_this, dispatchArguments);
+                    });
+
+                    // Enqueue, set the chain as the current promise and return
+                    this._dispatchQueue.push(promise);
+                } else {
+                    promise = this._dispatch(dispatchArguments);
+                }
+
+                this._currentDispatch = promise;
+
+                return promise;
+            }
+        }, {
+            key: "_dispatch",
+            value: function _dispatch(dispatchArguments) {
+                var _this2 = this;
+
+                this._currentDispatchPromises.clear();
+
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = this._callbacks[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var _step2$value = _slicedToArray(_step2.value, 2);
+
+                        var token = _step2$value[0];
+                        var callback = _step2$value[1];
+
+                        // A closure is needed for the callback and token variables
+                        (function (token, callback) {
+                            // All the promises must be set in this._currentDispatchPromises
+                            // before trying to resolved in order to make waitFor work
+                            var promise = Promise.resolve().then(function () {
+                                return _this2._executeCallback(callback, dispatchArguments);
+                            })["catch"](function (e) {
+                                throw new Error(e.stack || e);
+                            });
+
+                            _this2._currentDispatchPromises.set(token, promise);
+                        })(token, callback);
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
+                            _iterator2["return"]();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+
+                var dequeue = function dequeue() {
+                    _this2._dispatchQueue.shift();
+                    if (!_this2._dispatchQueue.length) {
+                        _this2._currentDispatch = false;
+                    }
+                };
+                var dispatchPromises = Array.from(this._currentDispatchPromises.values());
+                return Promise.all(dispatchPromises).then(dequeue, dequeue);
+            }
+        }, {
+            key: "_executeCallback",
+            value: function _executeCallback(callback, dispatchArguments) {
+                return callback.apply(this, dispatchArguments);
+            }
+        }, {
+            key: "isDispatching",
+
+            /**
+             * Is this dispatcher currently dispatching.
+             *
+             * @return {Boolean}
+             */
+            value: function isDispatching() {
+                return !!this._dispatchQueue.length;
+            }
+        }], [{
+            key: "current",
+            get: function () {
+                if (!_current) {
+                    _current = new Dispatcher();
+                }
+                return _current;
+            },
+            set: function (current) {
+                this._current = current;
+            }
+        }]);
 
         return Dispatcher;
     })();
+
+    exports.Dispatcher = Dispatcher;
     exports["default"] = Dispatcher;
-    Object.defineProperty(exports, "__esModule", {
-        value: true
-    });
 });
 //# sourceMappingURL=dispatcher.js.map
