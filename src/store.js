@@ -21,14 +21,20 @@ export class Store {
             dispatch: {
                 configurable: true,
                 writable: true,
-                enumberable: false,
+                enumeberable: false,
                 value: store.dispatch.bind(store)
             },
             waitFor: {
                 configurable: true,
                 writable: true,
-                enumberable: false,
+                enumeberable: false,
                 value: store.waitFor.bind(store)
+            },
+            destroy: {
+                configurable: true,
+                writable: true,
+                enumerable: false,
+                value: store.destroy.bind(store)
             }
         });
 
@@ -37,7 +43,7 @@ export class Store {
         }
     }
 
-    constructor(name, dispatcher, handlers = {}, initializeFn = null, handlerContext = null) {
+    constructor(name, dispatcher = null, handlers = {}, initializeFn = null, handlerContext = null) {
         this.setName(name);
         this.setDispatcher(dispatcher);
 
@@ -59,7 +65,9 @@ export class Store {
         if (this.dispatcher && this.dispatcher !== dispatcher) {
             this.dispatcher.unregister(this.name);
         }
-        dispatcher.register(this.name, this.callback.bind(this));
+        if (dispatcher) {
+            dispatcher.register(this.name, this.callback.bind(this));
+        }
         this.dispatcher = dispatcher;
     }
 
@@ -116,6 +124,12 @@ export class Store {
      */
     addActionHandler(action, handler) {
         this.handlers.set(action, handler);
+    }
+
+    destroy() {
+        if (this.onDestroy instanceof Function) {
+            this.onDestroy();
+        }
     }
 }
 

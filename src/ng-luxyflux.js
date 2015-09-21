@@ -24,18 +24,17 @@ luxyfluxModule.service('LuxyFluxActionCreators', [
                                 if (result !== undefined) {
                                     args.unshift(result);
                                 }
-                                dispatcher.dispatch(
-                                    `${actionType}_COMPLETED`,
-                                    ...args);
-                                resolve(result);
+                                dispatcher.dispatch(`${actionType}_COMPLETED`, ...args).then(() => {
+                                    resolve(result);
+                                });
+
                             }, (error) => {
                                 if (error !== undefined) {
                                     args.unshift(error);
                                 }
-                                dispatcher.dispatch(
-                                    `${actionType}_FAILED`, ...args
-                                );
-                                reject(error);
+                                dispatcher.dispatch(`${actionType}_FAILED`, ...args).then(() => {
+                                    reject(error);
+                                });
                             }
                         );
                     });

@@ -49,14 +49,16 @@ define(['exports', 'angular', './luxyflux'], function (exports, _angular, _luxyf
                                 if (result !== undefined) {
                                     args.unshift(result);
                                 }
-                                dispatcher.dispatch.apply(dispatcher, ['' + actionType + '_COMPLETED'].concat(_toConsumableArray(args)));
-                                resolve(result);
+                                dispatcher.dispatch.apply(dispatcher, ['' + actionType + '_COMPLETED'].concat(_toConsumableArray(args))).then(function () {
+                                    resolve(result);
+                                });
                             }, function (error) {
                                 if (error !== undefined) {
                                     args.unshift(error);
                                 }
-                                dispatcher.dispatch.apply(dispatcher, ['' + actionType + '_FAILED'].concat(_toConsumableArray(args)));
-                                reject(error);
+                                dispatcher.dispatch.apply(dispatcher, ['' + actionType + '_FAILED'].concat(_toConsumableArray(args))).then(function () {
+                                    reject(error);
+                                });
                             });
                         });
                     };

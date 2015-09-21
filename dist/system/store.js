@@ -86,7 +86,8 @@ System.register([], function (_export) {
             _storeCounter = 1;
 
             Store = (function () {
-                function Store(name, dispatcher) {
+                function Store(name) {
+                    var dispatcher = arguments[1] === undefined ? null : arguments[1];
                     var handlers = arguments[2] === undefined ? {} : arguments[2];
                     var initializeFn = arguments[3] === undefined ? null : arguments[3];
                     var handlerContext = arguments[4] === undefined ? null : arguments[4];
@@ -140,7 +141,9 @@ System.register([], function (_export) {
                         if (this.dispatcher && this.dispatcher !== dispatcher) {
                             this.dispatcher.unregister(this.name);
                         }
-                        dispatcher.register(this.name, this.callback.bind(this));
+                        if (dispatcher) {
+                            dispatcher.register(this.name, this.callback.bind(this));
+                        }
                         this.dispatcher = dispatcher;
                     }
                 }, {
@@ -211,6 +214,13 @@ System.register([], function (_export) {
                     value: function addActionHandler(action, handler) {
                         this.handlers.set(action, handler);
                     }
+                }, {
+                    key: "destroy",
+                    value: function destroy() {
+                        if (this.onDestroy instanceof Function) {
+                            this.onDestroy();
+                        }
+                    }
                 }], [{
                     key: "decorate",
                     value: function decorate(owner, name, dispatcher, handlers) {
@@ -233,14 +243,20 @@ System.register([], function (_export) {
                             dispatch: {
                                 configurable: true,
                                 writable: true,
-                                enumberable: false,
+                                enumeberable: false,
                                 value: store.dispatch.bind(store)
                             },
                             waitFor: {
                                 configurable: true,
                                 writable: true,
-                                enumberable: false,
+                                enumeberable: false,
                                 value: store.waitFor.bind(store)
+                            },
+                            destroy: {
+                                configurable: true,
+                                writable: true,
+                                enumerable: false,
+                                value: store.destroy.bind(store)
                             }
                         });
 
