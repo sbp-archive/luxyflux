@@ -5,7 +5,7 @@ export class ActionCreators {
             _actionCreatorsDecorator: {
                 configurable: false,
                 writable: false,
-                enumberable: false,
+                enumerable: false,
                 value: actionCreators
             },
             dispatcher: {
