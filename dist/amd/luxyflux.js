@@ -1,30 +1,31 @@
 define(['exports', './dispatcher', './actioncreators', './store'], function (exports, _dispatcher, _actioncreators, _store) {
     'use strict';
 
-    var _interopRequire = function (obj) { return obj && obj.__esModule ? obj['default'] : obj; };
-
-    var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } };
-
-    var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
     Object.defineProperty(exports, '__esModule', {
         value: true
     });
+
+    var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+    function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
     var marked0$0 = [_entries].map(regeneratorRuntime.mark);
 
-    var _Dispatcher = _interopRequire(_dispatcher);
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-    var _ActionCreators = _interopRequire(_actioncreators);
+    var _Dispatcher = _interopRequireDefault(_dispatcher);
 
-    var _Store = _interopRequire(_store);
+    var _ActionCreators = _interopRequireDefault(_actioncreators);
 
-    exports.Dispatcher = _Dispatcher;
-    exports.ActionCreators = _ActionCreators;
-    exports.Store = _Store;
+    var _Store = _interopRequireDefault(_store);
+
+    exports.Dispatcher = _Dispatcher['default'];
+    exports.ActionCreators = _ActionCreators['default'];
+    exports.Store = _Store['default'];
     var defaultStoreConfig = {
-        dispatcher: _Dispatcher.current,
+        dispatcher: _Dispatcher['default'].current,
         name: null,
         handlers: {},
         initialize: function initialize() {},
@@ -33,7 +34,7 @@ define(['exports', './dispatcher', './actioncreators', './store'], function (exp
 
     exports.defaultStoreConfig = defaultStoreConfig;
     var defaultActionCreatorsConfig = {
-        dispatcher: _Dispatcher.current,
+        dispatcher: _Dispatcher['default'].current,
         serviceActions: {},
         decorate: null
     };
@@ -48,15 +49,16 @@ define(['exports', './dispatcher', './actioncreators', './store'], function (exp
         _createClass(LuxyFlux, null, [{
             key: 'createStore',
             value: function createStore(config) {
-                var StoreCls = arguments[1] === undefined ? _Store : arguments[1];
+                var StoreCls = arguments.length <= 1 || arguments[1] === undefined ? _Store['default'] : arguments[1];
 
                 config = Object.assign({}, defaultStoreConfig, config);
 
-                var name = config.name;
-                var dispatcher = config.dispatcher;
-                var handlers = config.handlers;
-                var initialize = config.initialize;
-                var decorate = config.decorate;
+                var _config = config;
+                var name = _config.name;
+                var dispatcher = _config.dispatcher;
+                var handlers = _config.handlers;
+                var initialize = _config.initialize;
+                var decorate = _config.decorate;
 
                 delete config.name;
                 delete config.dispatcher;
@@ -110,13 +112,14 @@ define(['exports', './dispatcher', './actioncreators', './store'], function (exp
         }, {
             key: 'createActions',
             value: function createActions(config) {
-                var ActionCreatorsCls = arguments[1] === undefined ? _ActionCreators : arguments[1];
+                var ActionCreatorsCls = arguments.length <= 1 || arguments[1] === undefined ? _ActionCreators['default'] : arguments[1];
 
                 config = Object.assign({}, defaultActionCreatorsConfig, config);
 
-                var dispatcher = config.dispatcher;
-                var serviceActions = config.serviceActions;
-                var decorate = config.decorate;
+                var _config2 = config;
+                var dispatcher = _config2.dispatcher;
+                var serviceActions = _config2.serviceActions;
+                var decorate = _config2.decorate;
 
                 delete config.dispatcher;
                 delete config.serviceActions;

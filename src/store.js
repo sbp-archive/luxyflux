@@ -7,7 +7,7 @@ export class Store {
             _storeDecorator: {
                 configurable: false,
                 writable: false,
-                enumberable: false,
+                enumerable: false,
                 value: store
             },
             name: {
@@ -21,13 +21,13 @@ export class Store {
             dispatch: {
                 configurable: true,
                 writable: true,
-                enumeberable: false,
+                enumerable: false,
                 value: store.dispatch.bind(store)
             },
             waitFor: {
                 configurable: true,
                 writable: true,
-                enumeberable: false,
+                enumerable: false,
                 value: store.waitFor.bind(store)
             },
             destroy: {
